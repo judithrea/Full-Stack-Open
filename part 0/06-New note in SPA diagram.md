@@ -15,5 +15,5 @@ sequenceDiagram
     server-->>browser: New note created
     deactivate server
 
-    Note left of the server: The server only responds with status code 201 created and there is no page reload
+    Note left of server: The server only responds with status code 201 created and there is no page reload
 ```
