@@ -5,7 +5,7 @@ sequenceDiagram
 
     Note right of browser: The browser uses the previously fetched JS code to prevent a new GET request and a page reload
 
-    Note right of browser: Then the JS updates the notes list, rerenders the list on the page and sends the new note to the server
+    Note right of browser: Then, the JS updates the DOM with the new note, displaying it on the page, and sends the new note to the server
     
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
     activate server
