@@ -41,7 +41,7 @@ const App = () => {
     (accumulator, currentValue) => accumulator + currentValue, 0)
   const statsAverage = averageArray.reduce(
     (accumulator, currentValue) => accumulator + currentValue, 0) / statsTotal
-  const positivePercentage = (good / statsTotal) * 100  
+  const positivePercentage = (good / statsTotal) * 100 
   
   return (
     <div>
@@ -56,7 +56,7 @@ const App = () => {
       <Statistics text={badText} clicks={bad} />
       <Statistics text='total' clicks={statsTotal} />
       <Statistics text='average' clicks={statsTotal === 0? 0: statsAverage} />
-      <Statistics text='positive' clicks={statsTotal === 0? 0: positivePercentage} />
+      <Statistics text='positive' clicks={statsTotal === 0? `${0} %`: `${positivePercentage} %`} />
     </div>
   )
 }
