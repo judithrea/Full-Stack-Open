@@ -3,22 +3,45 @@ import { useState } from 'react'
 const Button = ({onClick, text}) => 
   <button onClick={onClick}>{text}</button>
 
+// StatisticLine component
+const StatisticLine = ({text, value}) => 
+  <p>{text} {value}</p>
+
 // Statistics component
-const Statistics = ({text, clicks}) => 
-  <p>{text} {clicks}</p>
+const Statistics = ({good, neutral, bad, statsTotal, statsAverage, positivePercentage}) => {
+  return(
+    <div>
+      {/* Only display statistics if there's feedback data */}
+      {statsTotal > 0? (
+        <div>
+          <StatisticLine text='good' value ={good} />
+          <StatisticLine text='neutral' value ={neutral} />
+          <StatisticLine text='bad' value ={bad} />
+          <StatisticLine text='total' value={statsTotal} />
+          <StatisticLine text='average' value={statsTotal === 0? 0: statsAverage} />
+          <StatisticLine text='positive' value={statsTotal === 0? `${0} %`: `${positivePercentage} %`} />
+        </div>
+        ) : (
+        <p>No feedback given</p>
+        )
+      }
+    </div>
+  )
+}
 
 const App = () => {
-  // text of buttons and statistics
-  const goodText = 'good'
-  const neutralText = 'neutral'
-  const badText = 'bad'
-
-  // save clicks of each button to its own state
+  // Save clicks of each button to its own state
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  // handle clicks of each button
+  // Statistics with extra calculations
+  const statsTotal = good + neutral + bad
+  const statsAverage = (good - bad) / statsTotal
+  const positivePercentage = (good / statsTotal) * 100
+   
+
+  // Handle clicks of each button
   const handleGoodClick = () => {
     const updatedGood = good + 1
     setGood(updatedGood)
@@ -33,36 +56,16 @@ const App = () => {
     const updatedBad = bad + 1
     setBad(updatedBad)
   }
-
-  // Statistics with extra calculations
-  const statsTotal = good + neutral + bad
-  const averageArray = [good, neutral * 0, bad * -1]
-  const statsAverage = averageArray.reduce(
-    (accumulator, currentValue) => accumulator + currentValue, 0) / statsTotal
-  const positivePercentage = (good / statsTotal) * 100 
   
   return (
     <div>
       <h1>Give Feedback</h1>
-      <Button onClick={handleGoodClick} text={goodText} />
-      <Button onClick={handleNeutralClick} text={neutralText} />
-      <Button onClick={handleBadClick} text={badText} />
+      <Button onClick={handleGoodClick} text='good' />
+      <Button onClick={handleNeutralClick} text='neutral' />
+      <Button onClick={handleBadClick} text='bad' />
 
       <h1>Statistics</h1>
-      {/* Only display statistics if there's feedback data */}
-      {statsTotal > 0? (
-        <div>
-          <Statistics text={goodText} clicks={good} />
-          <Statistics text={neutralText} clicks={neutral} />
-          <Statistics text={badText} clicks={bad} />
-          <Statistics text='total' clicks={statsTotal} />
-          <Statistics text='average' clicks={statsTotal === 0? 0: statsAverage} />
-          <Statistics text='positive' clicks={statsTotal === 0? `${0} %`: `${positivePercentage} %`} />
-        </div>
-      ) : (
-        <p>No feedback given</p>
-      )
-      }
+        <Statistics good={good} neutral={neutral} bad={bad} statsTotal={statsTotal} statsAverage={statsAverage} positivePercentage={positivePercentage}/>
     </div>
   )
 }
