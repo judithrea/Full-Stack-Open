@@ -1,26 +1,35 @@
 import { useState } from 'react'
+
 // Button component
 const Button = ({onClick, text}) => 
   <button onClick={onClick}>{text}</button>
 
 // StatisticLine component
-const StatisticLine = ({text, value}) => 
-  <p>{text} {value}</p>
-
+const StatisticLine = ({text, value}) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  ) 
+}
+  
 // Statistics component
 const Statistics = ({good, neutral, bad, statsTotal, statsAverage, positivePercentage}) => {
   return(
     <div>
-      {/* Only display statistics if there's feedback data */}
+      {/* Display statistics if there's feedback data */}
       {statsTotal > 0? (
-        <div>
-          <StatisticLine text='good' value ={good} />
-          <StatisticLine text='neutral' value ={neutral} />
-          <StatisticLine text='bad' value ={bad} />
-          <StatisticLine text='total' value={statsTotal} />
-          <StatisticLine text='average' value={statsTotal === 0? 0: statsAverage} />
-          <StatisticLine text='positive' value={statsTotal === 0? `${0} %`: `${positivePercentage} %`} />
-        </div>
+        <table>
+          <tbody>
+            <StatisticLine text='good' value ={good} />
+            <StatisticLine text='neutral' value ={neutral} />
+            <StatisticLine text='bad' value ={bad} />
+            <StatisticLine text='total' value={statsTotal} />
+            <StatisticLine text='average' value={statsTotal === 0? 0: statsAverage} />
+            <StatisticLine text='positive' value={statsTotal === 0? `${0} %`: `${positivePercentage} %`} />
+          </tbody>
+        </table>
         ) : (
         <p>No feedback given</p>
         )
@@ -60,9 +69,9 @@ const App = () => {
   return (
     <div>
       <h1>Give Feedback</h1>
-      <Button onClick={handleGoodClick} text='good' />
-      <Button onClick={handleNeutralClick} text='neutral' />
-      <Button onClick={handleBadClick} text='bad' />
+      <Button onClick={handleGoodClick} text='good'/>
+      <Button onClick={handleNeutralClick} text='neutral'/>
+      <Button onClick={handleBadClick} text='bad'/>
 
       <h1>Statistics</h1>
         <Statistics good={good} neutral={neutral} bad={bad} statsTotal={statsTotal} statsAverage={statsAverage} positivePercentage={positivePercentage}/>
