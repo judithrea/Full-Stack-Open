@@ -35,10 +35,8 @@ const App = () => {
   }
 
   // Statistics with extra calculations
-  const statsArray = [good, neutral, bad]
+  const statsTotal = good + neutral + bad
   const averageArray = [good, neutral * 0, bad * -1]
-  const statsTotal = statsArray.reduce(
-    (accumulator, currentValue) => accumulator + currentValue, 0)
   const statsAverage = averageArray.reduce(
     (accumulator, currentValue) => accumulator + currentValue, 0) / statsTotal
   const positivePercentage = (good / statsTotal) * 100 
@@ -51,12 +49,20 @@ const App = () => {
       <Button onClick={handleBadClick} text={badText} />
 
       <h1>Statistics</h1>
-      <Statistics text={goodText} clicks={good} />
-      <Statistics text={neutralText} clicks={neutral} />
-      <Statistics text={badText} clicks={bad} />
-      <Statistics text='total' clicks={statsTotal} />
-      <Statistics text='average' clicks={statsTotal === 0? 0: statsAverage} />
-      <Statistics text='positive' clicks={statsTotal === 0? `${0} %`: `${positivePercentage} %`} />
+      {/* Only display statistics if there's feedback data */}
+      {statsTotal > 0? (
+        <div>
+          <Statistics text={goodText} clicks={good} />
+          <Statistics text={neutralText} clicks={neutral} />
+          <Statistics text={badText} clicks={bad} />
+          <Statistics text='total' clicks={statsTotal} />
+          <Statistics text='average' clicks={statsTotal === 0? 0: statsAverage} />
+          <Statistics text='positive' clicks={statsTotal === 0? `${0} %`: `${positivePercentage} %`} />
+        </div>
+      ) : (
+        <p>No feedback given</p>
+      )
+      }
     </div>
   )
 }
