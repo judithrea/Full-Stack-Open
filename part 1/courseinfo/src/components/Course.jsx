@@ -36,12 +36,10 @@ const Content = ({course}) => {
   }
 
 const Total = ({course}) => {
+    const exercises = course.parts.map(obj => obj.exercises)
+    const total = exercises.reduce((sum, num) => sum + num, 0)
   return (
-    <p>Total of {
-        course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises +
-        course.parts[3].exercises
-        } exercises
-    </p>
+    <p>Total of {total} exercises</p>
   )
 }
 
