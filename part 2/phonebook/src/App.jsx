@@ -10,9 +10,11 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
+  const baseUrl = 'http://localhost:3001/persons'
+
   useEffect(() => {
     axios
-      .get('http://localhost:3001/persons')
+      .get(baseUrl)
       .then(response => {
         setPersons(response.data)
       })
@@ -29,7 +31,12 @@ const App = () => {
 
     const notNewPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase()) 
 
-    notNewPerson ? alert(`${newName} is already added to phonebook`) : setPersons(persons.concat(nameObject))
+    notNewPerson ? alert(`${newName} is already added to phonebook`) : 
+    axios 
+      .post(baseUrl, nameObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+      })
     
     setNewName('')
     setNewNumber('')
