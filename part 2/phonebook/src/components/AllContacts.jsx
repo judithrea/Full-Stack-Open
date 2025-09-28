@@ -1,11 +1,13 @@
-const AllContacts = ({ filter, filteredPersons, persons }) =>
+const AllContacts = ({ filter, filteredPersons, persons, handleDeletePerson }) => 
   <div>
     {filter.length > 0 ?
       filteredPersons.length > 0 ?
         <ul>
           {filteredPersons.map(person =>
             <div key={person.name}>
-              <li>{person.name} {person.number}</li>
+              <li>
+                {person.name} {person.number}
+              </li>
             </div>)
           }
         </ul>
@@ -14,7 +16,9 @@ const AllContacts = ({ filter, filteredPersons, persons }) =>
       <ul>
         {persons.map(person =>
           <div key={person.name}>
-            <li>{person.name} {person.number}</li>
+            <li>
+              {person.name} {person.number} <button onClick={() => handleDeletePerson(person.id, person.name)}>delete</button>
+            </li>
           </div>
         )}
       </ul>}

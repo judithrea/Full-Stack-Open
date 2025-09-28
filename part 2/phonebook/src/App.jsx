@@ -11,8 +11,6 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
-  const baseUrl = 'http://localhost:3001/persons'
-
   useEffect(() => {
     personService
       .getAll()
@@ -43,6 +41,16 @@ const App = () => {
     setNewNumber('')
   }
 
+   const handleDeletePerson = (id, name) => {
+    window.confirm(`Delete ${name}?`) ? 
+      personService
+        .remove(id)
+        .then(() => 
+          setPersons(prevPersons => prevPersons.filter(person => person.id !== id))
+        )
+    : undefined
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -68,7 +76,8 @@ const App = () => {
         onNumberChange={handleNumberChange}
       />
       <h2>Contacts</h2>
-      <AllContacts filter={filter} filteredPersons={filteredPersons} persons={persons}/>
+      <AllContacts filter={filter} filteredPersons={filteredPersons} persons={persons}
+      handleDeletePerson={handleDeletePerson}/>
     </div>
   )
 }
