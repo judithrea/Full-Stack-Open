@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import NewContactForm from './components/NewContactForm'
 import AllContacts from './components/AllContacts'
@@ -28,14 +27,27 @@ const App = () => {
       number: newNumber
     }
 
-    const notNewPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase()) 
+    const notNewName = persons.find(person => person.name.toLowerCase() === newName.toLowerCase()) 
+    
+    const notNewNumber = persons.find(person => person.number === newNumber)
 
-    notNewPerson ? alert(`${newName} is already added to phonebook`) : 
-    personService 
-      .create(nameObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-      })
+    const differentNumber = persons.find(person => person.name.toLowerCase() === newName.toLowerCase() && person.number !== newNumber)
+
+    differentNumber && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`) ? 
+      personService
+        .update(notNewName.id, nameObject)
+        .then(updatedPerson => 
+          setPersons(prevPersons => prevPersons.map(person => person.id === notNewName.id ? updatedPerson : person))
+        ) 
+    :  
+      notNewName && notNewNumber ? 
+        alert(`${newName} is already added to phonebook`)
+      :
+        personService 
+          .create(nameObject)
+          .then(returnedPerson => {
+            setPersons(persons.concat(returnedPerson))
+          })
     
     setNewName('')
     setNewNumber('')
