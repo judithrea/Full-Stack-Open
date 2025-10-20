@@ -1,7 +1,7 @@
 import express from 'express'
-const app = express()
+import morgan from 'morgan'
 
-app.use(express.json())
+const app = express()
 
 let persons = [
     {
@@ -25,6 +25,14 @@ let persons = [
       id: "4"
     }
   ]
+
+app.use(express.json())
+
+morgan.token('body', (req) => {
+  return req.method === 'POST' ? JSON.stringify(req.body) : '';
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 app.get('/api/persons', (req, res) => {
   res.json(persons)
