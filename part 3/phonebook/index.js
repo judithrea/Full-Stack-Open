@@ -1,6 +1,8 @@
 import express from 'express'
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
       name: "Arto Hellas",
@@ -47,6 +49,34 @@ app.delete('/api/persons/:id', (req, res) => {
   const id = req.params.id
   persons = persons.filter(p => p.id !== id)
   res.status(204).end()
+})
+
+const generateId = () => {
+  const id = Math.floor(Math.random() * 1e6)
+  return String(id)
+}
+
+app.post('/api/persons', (req ,res) => {
+  const body = req.body
+
+  if (!body.name || !body.number) {
+    return res.status(400).json({ 
+      error: 'name or number missing' 
+    })
+  } else if (persons.find(person => person.name === body.name)) {
+    return res.status(400).json({ 
+      error: 'name must be unique' 
+    }) 
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  }
+
+  persons = persons.concat(person)
+  res.json(person)
 })
 
 const PORT = 3001
