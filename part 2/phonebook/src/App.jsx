@@ -22,24 +22,24 @@ const App = () => {
 
   const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
-  const addName = (event) => {
+  const addPerson = (event) => {
     event.preventDefault()
-    const nameObject = {
+    const personObject = {
       name: newName,
       number: newNumber
     }
 
-    const notNewName = persons.find(person => person.name.toLowerCase() === newName.toLowerCase()) 
+    const oldName = persons.find(person => person.name.toLowerCase() === newName.toLowerCase()) 
     
-    const notNewNumber = persons.find(person => person.number === newNumber)
+    const oldNumber = persons.find(person => person.number === newNumber)
     
-    const differentNumber = persons.find(person => person.name.toLowerCase() === newName.toLowerCase() && person.number !== newNumber)
+    const changingNumber = persons.find(person => person.name.toLowerCase() === newName.toLowerCase() && person.number !== newNumber)
     
-    differentNumber && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`) ? 
+    changingNumber && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`) ? 
       personService
-        .update(notNewName.id, nameObject)
+        .update(oldName.id, personObject)
         .then(updatedPerson => {
-          setPersons(prevPersons => prevPersons.map(person => person.id === notNewName.id ? updatedPerson : person))
+          setPersons(prevPersons => prevPersons.map(person => person.id === oldName.id ? updatedPerson : person))
           setNotification({
             message: `Sucessfully updated ${updatedPerson.name}`,
             type: 'success'
@@ -50,20 +50,20 @@ const App = () => {
         }) 
         .catch(error => {
           setNotification({
-            message: `${nameObject.name} has already been deleted`,
+            message: `${personObject.name} has already been deleted`,
             type: 'error'
           })
           setTimeout(() => {
             setNotification(null)
           }, 5000)
-          setPersons(prevPersons => prevPersons.filter(person => person.id !== notNewName.id))
+          setPersons(prevPersons => prevPersons.filter(person => person.id !== oldName.id))
         })
     :  
-      notNewName && notNewNumber ? 
+      oldName && oldNumber ? 
         alert(`${newName} is already added to phonebook`)
       :
         personService 
-          .create(nameObject)
+          .create(personObject)
           .then(returnedPerson => {
             setPersons(persons.concat(returnedPerson))
             setNotification({
@@ -117,7 +117,7 @@ const App = () => {
       <Filter value={filter} onChange={handleFilterChange} />
       <h2>Add a new contact</h2>
       <NewContactForm 
-        onSubmit={addName}
+        onSubmit={addPerson}
         nameValue={newName} 
         onNameChange={handleNameChange}
         numberValue={newNumber} 
