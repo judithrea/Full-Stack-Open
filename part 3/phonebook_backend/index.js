@@ -67,10 +67,14 @@ app.get('/api/persons/:id', (req, res) => {
   // }
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = req.params.id
-  persons = persons.filter(p => p.id !== id)
-  res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => {
+  Person.findByIdAndDelete(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => next(error))
+  // const id = req.params.id
+  // persons = persons.filter(p => p.id !== id)
 })
 
 // const generateId = () => {
@@ -104,6 +108,8 @@ app.post('/api/persons', (req ,res) => {
     res.json(savedPerson)
   })
 })
+
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
