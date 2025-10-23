@@ -49,14 +49,27 @@ const App = () => {
           }, 5000)
         }) 
         .catch(error => {
-          setNotification({
-            message: `${personObject.name} has already been deleted`,
-            type: 'error'
-          })
-          setTimeout(() => {
-            setNotification(null)
-          }, 5000)
-          setPersons(prevPersons => prevPersons.filter(person => person.id !== oldName.id))
+          switch (error.response.status) {
+            default: 
+              setNotification({
+                message: error.response.data.error,
+                type: 'error'
+              })
+              setTimeout(() => {
+                setNotification(null)
+              }, 5000)
+              break
+            case 404:
+              setNotification({
+                message: `${personObject.name} has already been deleted`,
+                type: 'error'
+              })
+              setTimeout(() => {
+                setNotification(null)
+              }, 5000)
+              setPersons(prevPersons => prevPersons.filter(person => person.id !== oldName.id))
+              break
+          }
         })
     :  
       oldName && oldNumber ? 
@@ -74,6 +87,17 @@ const App = () => {
               setNotification(null)
             }, 5000)
           })
+          .catch(error => {
+            console.log(error)
+            setNotification({
+              message: error.response.data.error,
+              type: 'error'
+            })
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
+          })
+      
     
     setNewName('')
     setNewNumber('')
