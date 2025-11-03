@@ -1,6 +1,5 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const morgan = require('morgan')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
@@ -21,14 +20,10 @@ mongoose
 
 //app.use(express.static('dist'))
 app.use(express.json())
-
-morgan.token('body', (req) => {
-  return req.method === 'POST' ? JSON.stringify(req.body) : ''
-})
-
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+app.use(middleware.requestLogger)
 
 app.use('/api/blogs', blogsRouter)
+
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
