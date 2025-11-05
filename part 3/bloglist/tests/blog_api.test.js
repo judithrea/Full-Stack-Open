@@ -201,6 +201,104 @@ describe('when there is initially one user in db', () => {
     const usernames = usersAtEnd.map(u => u.username)
     assert(usernames.includes(newUser.username))
   })
+
+  test('creation fails with proper statuscode and message if username already exists', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'User 1',
+      password: 'user1pass',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    assert(result.body.error.includes('expected `username` to be unique'))
+  })
+
+  test('creation fails if invalid username is given', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const shortUsername = {
+      username: 'sh',
+      name: 'Short Username',
+      password: 'short1',
+    }
+
+    const failedUsername = await api
+      .post('/api/users')
+      .send(shortUsername)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    assert(failedUsername.body.error.includes('User validation failed: username'))
+  })
+
+  test('creation fails if invalid password is given', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const shortPassword = {
+      username: 'shortpass',
+      name: 'Short Password',
+      password: 'sh',
+    }
+
+    const failedPassword = await api
+      .post('/api/users')
+      .send(shortPassword)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    assert(failedPassword.body.error.includes('password must be at least 3 characters long'))
+  })  
+
+  test('creation fails if username is not given', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const noUsername = {
+      name: 'Short Username',
+      password: 'short1',
+    }
+
+    const failedUsername = await api
+      .post('/api/users')
+      .send(noUsername)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    assert(failedUsername.body.error.includes('User validation failed: username: Path `username` is required'))
+  })
+
+  test('creation fails if password is not given', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const noPassword = {
+      username: 'shortpass',
+      name: 'Short Password'
+    }
+
+    const failedPassword = await api
+      .post('/api/users')
+      .send(noPassword)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    
+    const usersAtEnd = await helper.usersInDb()
+    assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    assert(failedPassword.body.error.includes('password missing'))
+  })  
 })
 
 after(async () => {
