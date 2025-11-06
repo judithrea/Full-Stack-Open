@@ -3,6 +3,7 @@ const { update } = require('lodash')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const { userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -11,27 +12,9 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-// const getTokenFrom = request => {
-//   const authorization = request.get('authorization')
-//   if(authorization && authorization.startsWith('Bearer')) {
-//     console.log('no bearer', authorization.replace('Bearer ', ''))
-    
-//     return authorization.replace('Bearer ', '')
-//   }
-//   return null
-// }
-
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
-  const decodedToken = jwt.verify(request.token, process.env.SECRET) 
-  if(!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
-  }
-  const user = await User.findById(decodedToken.id)
-
-  if (!user) {
-    return response.status(400).json({ error: 'no users in db' })
-  }
+  const user = request.user
 
   const blog = new Blog({
     title: body.title,
@@ -57,9 +40,23 @@ blogsRouter.get('/:id', async (request, response) => {
   }
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id)
-  response.status(204).end()
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+  const user = request.user
+
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    return response.status(400).json({ error: 'blog not found' })
+  }
+
+  if (blog.user.toString() === user._id.toString()) {
+    await Blog.findByIdAndDelete(request.params.id)
+    user.blogs = user.blogs.filter(blog => blog.toString() !== request.params.id)
+    await user.save()
+    response.status(204).end()
+  } else {
+    response.status(403).json({ error: 'Not authorized to delete this blog'})
+  }
 })
 
 blogsRouter.put('/:id', async (request, response) => {

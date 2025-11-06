@@ -3,8 +3,8 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIxIiwiaWQiOiI2OTBhODY5ZjI0N2E0Y2IzNTMyZDEzM2YiLCJpYXQiOjE3NjI0MzE3MzN9.e8E0jBwM-cy7ABe7BxgmSrd1HxPAthNBs5J70vj-Dx8
 
 {
-  "title": "Blog Title 8",
-  "author": "Author 8",
-  "url": "url 8",
-  "likes": 4
+  "title": "Blog Title 3",
+  "author": "Author 3",
+  "url": "url 3",
+  "likes": 9
 }
