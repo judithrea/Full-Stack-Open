@@ -55,7 +55,7 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
     await user.save()
     response.status(204).end()
   } else {
-    response.status(403).json({ error: 'Not authorized to delete this blog'})
+    response.status(401).json({ error: 'Not authorized to delete this blog'})
   }
 })
 
