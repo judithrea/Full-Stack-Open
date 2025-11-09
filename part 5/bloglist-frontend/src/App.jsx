@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -40,9 +41,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setErrorMessage('Wrong credentials')
+      setNotification({
+        message: 'Wrong credentials',
+        type: 'error'
+      })
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification(null)
       }, 5000)
     }
   }
@@ -60,10 +64,17 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
-    } catch {
-      setErrorMessage('Creation not successful')
+      setNotification({
+        message: 'Successfully added new blog',
+        type: 'success'
+      })
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification(null)
+      }, 5000)
+    } catch {
+      setNotification('Creation not successful')
+      setTimeout(() => {
+        setNotification(null)
       }, 5000)
     }
   }
@@ -128,6 +139,7 @@ const App = () => {
   return (
     <div>
       <h2>Blog List</h2>
+      {notification && (<Notification type={notification.type} message={notification.message} />)}
       {user ?
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>Log out</button></p>
