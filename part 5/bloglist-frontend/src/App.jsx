@@ -13,6 +13,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -33,10 +34,10 @@ const App = () => {
     
     try {
       const user = await loginService.login({ username, password })
-      blogService.setToken(user.token)
       window.localStorage.setItem(
         'loggedBloglistUser', JSON.stringify(user)
       )
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -60,7 +61,8 @@ const App = () => {
     event.preventDefault()
     
     try { 
-      await blogService.create({ title, author, url })
+      const newBlog = await blogService.create({ title, author, url })
+      setBlogs(blogs.concat(newBlog))
       setTitle('')
       setAuthor('')
       setUrl('')
@@ -103,38 +105,50 @@ const App = () => {
       </form>
   )
 
-  const blogForm = () => (
-    <form onSubmit={handleCreateBlog}>
-      <div>
-        <label>
-        title:
-        <input 
-        type="text"
-        value={title}
-        onChange={({target}) => setTitle(target.value)} />
-        </label>
+  const blogForm = () => { 
+    const toggleCreateBtn = {display: blogFormVisible ? 'none' : ''}
+    const toggleBlogForm = {display: blogFormVisible ? '' : 'none'}
+    
+    return (
+    <div>
+      <div style={toggleCreateBtn}>
+        <button onClick={() => setBlogFormVisible(true)}>Create new blog</button>
       </div>
-      <div>
-        <label>
-        author:
-        <input 
-        type="text"
-        value={author}
-        onChange={({target}) => setAuthor(target.value)} />
-        </label>
-      </div>
-      <div>
-        <label>
-        url:
-        <input 
-        type="text"
-        value={url}
-        onChange={({target}) => setUrl(target.value)} />
-        </label>
-      </div>
-      <button type='submit'>Create</button>
-    </form>
-  )
+      <div style={toggleBlogForm}>
+        <form onSubmit={handleCreateBlog}>
+          <div>
+            <label>
+            title:
+            <input 
+            type="text"
+            value={title}
+            onChange={({target}) => setTitle(target.value)} />
+            </label>
+          </div>
+          <div>
+            <label>
+            author:
+            <input 
+            type="text"
+            value={author}
+            onChange={({target}) => setAuthor(target.value)} />
+            </label>
+          </div>
+          <div>
+            <label>
+            url:
+            <input 
+            type="text"
+            value={url}
+            onChange={({target}) => setUrl(target.value)} />
+            </label>
+          </div>
+          <button type='submit'>Create</button>
+        </form>
+        <button type='submit'onClick={() => setBlogFormVisible(false)}>Cancel</button>
+      </div>  
+    </div>
+  )}
 
   return (
     <div>
