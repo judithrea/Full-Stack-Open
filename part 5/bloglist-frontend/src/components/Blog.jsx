@@ -1,6 +1,7 @@
 import { useState } from "react"
+import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLikeUpdate }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
 
   const toggleViewBtn = {display: detailsVisible ? 'none' : ''}
@@ -23,7 +24,7 @@ const Blog = ({ blog }) => {
       </div>
       <div style={toggleDetails} >
         {blog.url} {<br/>}
-        {blog.likes}  <button>like</button> {<br/>}
+        {blog.likes}  <button onClick={() =>{handleLikeUpdate(blog)}}>like</button> {<br/>}
         {blog.user ? blog.user.name : ''}
       </div>
     </div>  
