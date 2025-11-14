@@ -14,6 +14,11 @@ const Blog = ({ user, blog, handleLikeUpdate, handleDeleteBlog }) => {
     marginBottom: 5
   }
 
+  const deleteBlog = () => {
+    const ok = window.confirm(`Remove post '${blog.title}' by ${blog.author}?`)
+    if (ok) {handleDeleteBlog(blog)}
+  }
+
   return (
     <div style={blogStyle}>
       <div>
@@ -23,9 +28,9 @@ const Blog = ({ user, blog, handleLikeUpdate, handleDeleteBlog }) => {
       </div>
       <div style={toggleDetails} >
         {blog.url} {<br/>}
-        {blog.likes}  <button onClick={() =>{handleLikeUpdate(blog)}}>like</button> {<br/>}
+        {blog.likes}  <button onClick={() => {handleLikeUpdate(blog)}}>like</button> {<br/>}
         {blog.user ? blog.user.name : ''}
-        {blog.user ? blog.user.username === user.username ? <button onClick={()=>{handleDeleteBlog(blog)}}>remove</button> : '' : ''}
+        {blog.user ? blog.user.username === user.username ? <button onClick={deleteBlog}>remove</button> : '' : ''}
       </div>
     </div>  
   )
