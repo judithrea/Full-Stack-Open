@@ -1,4 +1,4 @@
-const Notification = ({type, message}) => {
+const Notification = ({ type, message }) => {
   if (message === null) {
     return null
   }
@@ -24,8 +24,8 @@ const Notification = ({type, message}) => {
     borderColor: '#c05857ff'
   } : {}
 
-  const messageStyle = {...mainStyle, ...typeStyle}
-  
+  const messageStyle = { ...mainStyle, ...typeStyle }
+
   return (
     <div style={messageStyle}>
       {message}

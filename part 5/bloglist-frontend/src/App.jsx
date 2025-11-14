@@ -15,7 +15,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem(
@@ -57,30 +57,30 @@ const App = () => {
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
-        <div>
-          <label>
+      <div>
+        <label>
             username
-            <input 
-              type="text"
-              value={username}
-              onChange={({target}) => setUsername(target.value)} />
-          </label>
-        </div>
-        <div>
-          <label>
+          <input
+            type="text"
+            value={username}
+            onChange={({ target }) => setUsername(target.value)} />
+        </label>
+      </div>
+      <div>
+        <label>
             password
-            <input 
-              type="text"
-              value={password}
-              onChange={({target}) => setPassword(target.value)} />
-          </label>
-        </div>
-        <button type='submit'>Log in</button>
-      </form>
+          <input
+            type="text"
+            value={password}
+            onChange={({ target }) => setPassword(target.value)} />
+        </label>
+      </div>
+      <button type='submit'>Log in</button>
+    </form>
   )
 
   const handleLikeUpdate = async (blog) => {
-    const updatedBlog = await blogService.update(blog.id, {likes: blog.likes + 1})
+    const updatedBlog = await blogService.update(blog.id, { likes: blog.likes + 1 })
     setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog).sort((a, b) => b.likes - a.likes))
   }
 
@@ -100,7 +100,7 @@ const App = () => {
           <BlogForm blogs={blogs} setBlogs={setBlogs} setNotification={setNotification} />
           {blogs.map(blog => (<Blog user={user} key={blog.id} blog={blog} handleLikeUpdate={handleLikeUpdate} handleDeleteBlog={handleDeleteBlog}/>))}
         </div>
-      : 
+        :
         loginForm()
       }
     </div>

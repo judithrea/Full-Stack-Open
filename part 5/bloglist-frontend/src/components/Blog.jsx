@@ -1,10 +1,10 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ user, blog, handleLikeUpdate, handleDeleteBlog }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
 
-  const toggleViewBtn = {display: detailsVisible ? 'none' : ''}
-  const toggleDetails = {display: detailsVisible ? '' : 'none'}
+  const toggleViewBtn = { display: detailsVisible ? 'none' : '' }
+  const toggleDetails = { display: detailsVisible ? '' : 'none' }
 
   const blogStyle = {
     paddingTop: 10,
@@ -32,7 +32,7 @@ const Blog = ({ user, blog, handleLikeUpdate, handleDeleteBlog }) => {
         {blog.user ? blog.user.name : ''}
         {blog.user ? blog.user.username === user.username ? <button onClick={deleteBlog}>remove</button> : '' : ''}
       </div>
-    </div>  
+    </div>
   )
 }
 
