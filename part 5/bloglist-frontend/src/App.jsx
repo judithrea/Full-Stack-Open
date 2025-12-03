@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -55,38 +56,36 @@ const App = () => {
     setUser(null)
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>
-            username
-          <input
-            type="text"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)} />
-        </label>
-      </div>
-      <div>
-        <label>
-            password
-          <input
-            type="text"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)} />
-        </label>
-      </div>
-      <button type='submit'>Log in</button>
-    </form>
-  )
-
   const handleLikeUpdate = async (blog) => {
-    const updatedBlog = await blogService.update(blog.id, { likes: blog.likes + 1 })
-    setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog).sort((a, b) => b.likes - a.likes))
+    try {
+      const updatedBlog = await blogService.update(blog.id, { likes: blog.likes + 1 })
+      setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog).sort((a, b) => b.likes - a.likes))
+    } catch (error) {
+      console.error(error)
+      setNotification({
+        message: 'Something went wrong. Please try again.',
+        type: 'error'
+      })
+      setTimeout(() => {
+        setNotification(null)
+      })
+    }
   }
 
   const handleDeleteBlog = async (blog) => {
-    await blogService.remove(blog.id)
-    setBlogs(blogs.filter(b => b.id !== blog.id))
+    try {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+    } catch (error) {
+      console.error(error)
+      setNotification({
+        message: 'Something went wrong. Please try again.',
+        type: 'error'
+      })
+      setTimeout(() => {
+        setNotification(null)
+      })
+    }
   }
 
   return (
@@ -96,12 +95,19 @@ const App = () => {
       {user ?
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>Log out</button></p>
-          <h2>create new</h2>
-          <BlogForm blogs={blogs} setBlogs={setBlogs} setNotification={setNotification} />
+          <BlogForm
+            blogs={blogs}
+            setBlogs={setBlogs}
+            setNotification={setNotification}
+          />
           {blogs.map(blog => (<Blog user={user} key={blog.id} blog={blog} handleLikeUpdate={handleLikeUpdate} handleDeleteBlog={handleDeleteBlog}/>))}
         </div>
         :
-        loginForm()
+        <LoginForm
+          handleSubmit={handleLogin} handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)} username={username}
+          password={password}
+        />
       }
     </div>
   )

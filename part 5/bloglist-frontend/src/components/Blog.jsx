@@ -1,10 +1,11 @@
-import { useState } from 'react'
+// import { useState } from 'react'
+import Togglable from './Togglable'
 
 const Blog = ({ user, blog, handleLikeUpdate, handleDeleteBlog }) => {
-  const [detailsVisible, setDetailsVisible] = useState(false)
+  // const [detailsVisible, setDetailsVisible] = useState(false)
 
-  const toggleViewBtn = { display: detailsVisible ? 'none' : '' }
-  const toggleDetails = { display: detailsVisible ? '' : 'none' }
+  // const toggleViewBtn = { display: detailsVisible ? 'none' : '' }
+  // const toggleDetails = { display: detailsVisible ? '' : 'none' }
 
   const blogStyle = {
     paddingTop: 10,
@@ -20,18 +21,16 @@ const Blog = ({ user, blog, handleLikeUpdate, handleDeleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div>
-        {blog.title} {blog.author}
-        <button style={toggleViewBtn} onClick={() => setDetailsVisible(true)}>View</button>
-        <button style={toggleDetails} onClick={() => setDetailsVisible(false)}>hide</button>
-      </div>
-      <div style={toggleDetails} >
-        {blog.url} {<br/>}
-        {blog.likes}  <button onClick={() => {handleLikeUpdate(blog)}}>like</button> {<br/>}
-        {blog.user ? blog.user.name : ''}
-        {blog.user ? blog.user.username === user.username ? <button onClick={deleteBlog}>remove</button> : '' : ''}
-      </div>
+    <div className='blog' style={blogStyle}>
+      {blog.title} {blog.author}
+      <Togglable showButton='view' hideButton='hide'>
+        <div>
+          {blog.url} {<br/>}
+          {blog.likes}  <button onClick={() => {handleLikeUpdate(blog)}}>like</button> {<br/>}
+          {blog.user ? blog.user.name : ''}
+          {blog.user ? blog.user.username === user.username ? <button onClick={deleteBlog}>remove</button> : '' : ''}
+        </div>
+      </Togglable>
     </div>
   )
 }
