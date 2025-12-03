@@ -25,7 +25,6 @@ const Togglable = (props) => {
           <button onClick={toggleVisibility}>{props.hideButton}</button>
         </div>
       )}
-
     </span>
   )
 }

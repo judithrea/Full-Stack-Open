@@ -21,3 +21,4 @@ test('renders title and author by default but not likes and url', () => {
   expect(url).toBeNull()
   expect(likes).toBeNull()
 })
+
