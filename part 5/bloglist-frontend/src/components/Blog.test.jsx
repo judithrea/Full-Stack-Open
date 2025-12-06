@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 
-test('renders title and author by default but not likes and url', () => {
+test('<Blog /> renders title and author by default but not likes and url', () => {
   const blog = {
     title: 'Test Title',
     author: 'Test Author',

@@ -14,7 +14,6 @@ describe('<Togglable />', () => {
         </div>
       </Togglable>
     )
-    screen.debug()
   })
 
   test('url and likes show when view button is clicked', async () => {

@@ -56,6 +56,29 @@ const App = () => {
     setUser(null)
   }
 
+  const handleCreateBlog = async (blogObject) => {
+    try {
+      const newBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(newBlog))
+      setNotification({
+        message: 'Successfully added new blog.',
+        type: 'success'
+      })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    } catch (error) {
+      console.error('Blog creation failed', error)
+      setNotification({
+        message: 'Creation not successful.',
+        type: 'error'
+      })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
   const handleLikeUpdate = async (blog) => {
     try {
       const updatedBlog = await blogService.update(blog.id, { likes: blog.likes + 1 })
@@ -77,7 +100,7 @@ const App = () => {
       await blogService.remove(blog.id)
       setBlogs(blogs.filter(b => b.id !== blog.id))
     } catch (error) {
-      console.error(error)
+      console.error('Blog deletion failed', error)
       setNotification({
         message: 'Something went wrong. Please try again.',
         type: 'error'
@@ -99,6 +122,7 @@ const App = () => {
             blogs={blogs}
             setBlogs={setBlogs}
             setNotification={setNotification}
+            onSubmit={handleCreateBlog}
           />
           {blogs.map(blog => (<Blog user={user} key={blog.id} blog={blog} handleLikeUpdate={handleLikeUpdate} handleDeleteBlog={handleDeleteBlog}/>))}
         </div>

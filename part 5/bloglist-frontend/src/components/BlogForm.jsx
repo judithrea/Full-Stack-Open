@@ -2,38 +2,31 @@ import { useState, useRef } from 'react'
 import blogService from '../services/blogs'
 import Togglable from './Togglable'
 
-const BlogForm = ({ blogs, setBlogs, setNotification }) => {
+const BlogForm = ({ blogs, setBlogs, setNotification, onSubmit }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
   const blogFormRef = useRef()
 
-  const handleCreateBlog = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
+
+    const blogObject = {
+      title,
+      author,
+      url
+    }
 
     try {
       blogFormRef.current.toggleVisibility()
-      const newBlog = await blogService.create({ title, author, url })
-      setBlogs(blogs.concat(newBlog))
+      await onSubmit (blogObject)
+
       setTitle('')
       setAuthor('')
       setUrl('')
-      setNotification({
-        message: 'Successfully added new blog.',
-        type: 'success'
-      })
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
-    } catch {
-      setNotification({
-        message: 'Creation not successful.',
-        type: 'error'
-      })
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+    } catch (error) {
+      console.error('Blog creation failed', error)
     }
   }
 
@@ -41,7 +34,7 @@ const BlogForm = ({ blogs, setBlogs, setNotification }) => {
     <div>
       <Togglable showButton='new blog' hideButton='cancel' ref={blogFormRef}>
         <h2>Add a new blog</h2>
-        <form onSubmit={handleCreateBlog}>
+        <form onSubmit={handleSubmit}>
           <div>
             <label>
             title:
@@ -69,7 +62,7 @@ const BlogForm = ({ blogs, setBlogs, setNotification }) => {
                 onChange={({ target }) => setUrl(target.value)} />
             </label>
           </div>
-          <button type='submit'>Add</button>
+          <button type='submit' id='submitBlogForm'>Add</button>
         </form>
       </Togglable>
     </div>
