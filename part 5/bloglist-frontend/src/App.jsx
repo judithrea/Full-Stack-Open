@@ -113,7 +113,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>Blog List</h2>
+      <h1>Blog List</h1>
       {notification && (<Notification type={notification.type} message={notification.message} />)}
       {user ?
         <div>
